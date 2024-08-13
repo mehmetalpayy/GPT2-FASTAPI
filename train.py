@@ -1,4 +1,4 @@
-from helper import split_dataset, load_dataset, load_data_collator
+from helper import split_dataset, load_dataset, load_data_collator, load_model, load_tokenizer
 from transformers import GPT2Tokenizer, GPT2LMHeadModel
 from transformers import Trainer, TrainingArguments
 import os
@@ -57,15 +57,14 @@ def train(train_file_path,
           save_steps,
           max_steps
           ):
-    tokenizer = GPT2Tokenizer.from_pretrained(model_name)
+    tokenizer = load_tokenizer(model_name)
     train_dataset = load_dataset(train_file_path, tokenizer)
     data_collator = load_data_collator(tokenizer)
 
-    tokenizer.save_pretrained(output_dir)
-
-    model = GPT2LMHeadModel.from_pretrained(model_name)
+    model = load_model(model_name)
 
     model.save_pretrained(output_dir)
+    tokenizer.save_pretrained(output_dir)
 
     training_args = TrainingArguments(
         output_dir=output_dir,
